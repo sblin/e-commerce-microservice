@@ -1,0 +1,27 @@
+# Provision AWS EKS cluster
+apiVersion: xl-deploy/v1
+kind: Infrastructure
+spec:
+- name: aws-ecommerce
+  type: core.Directory
+  children:
+  - name: aws-aws-ecommerce
+    type: aws.Cloud
+    accesskey: !value AWSAccessKey
+    accessSecret: !value AWSAccessSecret
+    children:
+    - name: eks-cloudformation
+      type: aws.cloudformation.Stack
+      region: eu-west-3
+---
+apiVersion: xl-deploy/v1
+kind: Environments
+spec:
+- name: aws-ecommerce
+  type: core.Directory
+  children:
+  - name: aws-cloudformation-aws-ecommerce
+    type: udm.Environment
+    members:
+    - Infrastructure/aws-ecommerce/aws-aws-ecommerce
+    - Infrastructure/aws-ecommerce/aws-aws-ecommerce/eks-cloudformation
